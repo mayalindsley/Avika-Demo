@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: #FBF8F5; color: #221714; font-family: 'Archivo', sans-serif; }
+a { color: #8E2A21; text-decoration: none; }
+a:hover { color: #741F18; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<dc-import name="Nav" active="contact" hint-size="100%,76px"></dc-import>
+
+<header style="max-width:1160px; margin:0 auto; padding:88px 32px 56px">
+  <div style="font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8E2A21; margin-bottom:16px">Contact</div>
+  <h1 style="font-family:'Libre Caslon Text', serif; font-size:56px; line-height:1.08; font-weight:700; margin:0 0 20px; max-width:720px; text-wrap:balance">Book your free consultation.</h1>
+  <p style="font-size:18px; line-height:1.65; color:#6E5C55; margin:0; max-width:580px; text-wrap:pretty">Pick a time that works. We'll come back with a clear read on your growth opportunity — no pitch deck, no obligation.</p>
+</header>
+
+<section style="max-width:1160px; margin:0 auto; padding:0 32px 104px">
+  <sc-if value="{{ notBooked }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid; grid-template-columns:7fr 5fr; gap:56px; align-items:start">
+      <div style="background:#FFFDFB; border:1px solid #E9DDD6; border-radius:8px; padding:36px">
+        <div style="font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8E2A21; margin-bottom:20px">1 · Pick a day</div>
+        <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px">
+          <sc-for list="{{ days }}" as="d" hint-placeholder-count="10">
+            <button onClick="{{ d.pick }}" style="{{ d.style }}">
+              <div style="font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; opacity:0.7">{{ d.weekday }}</div>
+              <div style="font-family:'Libre Caslon Text', serif; font-size:22px; font-weight:700; margin-top:4px">{{ d.day }}</div>
+              <div style="font-size:12px; margin-top:2px; opacity:0.7">{{ d.month }}</div>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ dayPicked }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8E2A21; margin:32px 0 20px">2 · Pick a time</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap">
+            <sc-for list="{{ times }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.pick }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:grid; gap:16px; align-content:start">
+        <div style="font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8E2A21">3 · Your details</div>
+        <input placeholder="Name" onChange="{{ setName }}" style="font-family:'Archivo',sans-serif; font-size:15px; padding:14px 16px; border:1px solid #D9C8BF; border-radius:4px; background:#FFFDFB; color:#221714; outline:none" style-focus="border-color:#8E2A21"></input>
+        <input placeholder="Work email" style="font-family:'Archivo',sans-serif; font-size:15px; padding:14px 16px; border:1px solid #D9C8BF; border-radius:4px; background:#FFFDFB; color:#221714; outline:none" style-focus="border-color:#8E2A21"></input>
+        <input placeholder="Company" style="font-family:'Archivo',sans-serif; font-size:15px; padding:14px 16px; border:1px solid #D9C8BF; border-radius:4px; background:#FFFDFB; color:#221714; outline:none" style-focus="border-color:#8E2A21"></input>
+        <textarea placeholder="What are you trying to grow?" rows="3" style="font-family:'Archivo',sans-serif; font-size:15px; padding:14px 16px; border:1px solid #D9C8BF; border-radius:4px; background:#FFFDFB; color:#221714; outline:none; resize:vertical" style-focus="border-color:#8E2A21"></textarea>
+        <div style="font-size:14px; color:#6E5C55; min-height:20px">{{ selectionSummary }}</div>
+        <button onClick="{{ book }}" style="{{ bookStyle }}">Confirm consultation</button>
+        <div style="display:grid; gap:8px; font-size:14px; color:#A08D84; margin-top:8px">
+          <div>avikagrowth.com</div>
+          <div>@avikagrowth</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ booked }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#F7E9E3; border-radius:8px; padding:64px 56px; max-width:640px; animation:fadeUp 0.4s ease both">
+      <svg width="52" height="16" viewBox="0 0 44 14" aria-hidden="true" style="margin-bottom:18px"><path d="M4 12 A20 20 0 0 1 40 12" stroke="#E8A23B" stroke-width="5" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-family:'Libre Caslon Text', serif; font-size:32px; font-weight:700; margin-bottom:14px">You're booked.</div>
+      <p style="margin:0 0 8px; font-size:17px; line-height:1.6; color:#4A3B34">{{ confirmation }}</p>
+      <p style="margin:0; font-size:15px; line-height:1.6; color:#6E5C55">A calendar invite and prep note are on their way to your inbox.</p>
+      <button onClick="{{ reset }}" style="margin-top:28px; font-family:'Archivo',sans-serif; background:none; border:1px solid #D9C8BF; color:#4A3B34; padding:11px 20px; border-radius:4px; font-weight:600; font-size:14px; cursor:pointer" style-hover="border-color:#8E2A21; color:#8E2A21">Book a different time</button>
+    </div>
+  </sc-if>
+</section>
+
+<footer style="border-top:1px solid #E9DDD6">
+  <div style="max-width:1160px; margin:0 auto; padding:32px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; font-size:14px; color:#A08D84">
+    <span style="font-family:'Libre Caslon Text', serif; font-size:15px; font-weight:700; letter-spacing:0.06em; color:#8E2A21">AVIKA</span>
+    <div>© 2026 Avika · Your outsourced growth team</div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { day: null, time: null, booked: false, name: '' };
+  renderVals() {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const days = [];
+    const d = new Date();
+    while (days.length < 10) {
+      d.setDate(d.getDate() + 1);
+      if (d.getDay() === 0 || d.getDay() === 6) continue;
+      days.push(new Date(d));
+    }
+    const cellBase = { fontFamily: "'Archivo',sans-serif", textAlign: 'center', padding: '14px 8px', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.15s' };
+    const dayItems = days.map((dt) => {
+      const key = dt.toDateString();
+      const sel = this.state.day === key;
+      return {
+        weekday: dayNames[dt.getDay()], day: String(dt.getDate()), month: monthNames[dt.getMonth()],
+        pick: () => this.setState({ day: key }),
+        style: { ...cellBase, border: sel ? '1px solid #8E2A21' : '1px solid #E9DDD6', background: sel ? '#8E2A21' : '#FBF8F5', color: sel ? '#FBF8F5' : '#221714' },
+      };
+    });
+    const times = ['9:00 AM', '10:30 AM', '1:00 PM', '3:30 PM'].map((label) => {
+      const sel = this.state.time === label;
+      return {
+        label,
+        pick: () => this.setState({ time: label }),
+        style: { fontFamily: "'Archivo',sans-serif", fontSize: '15px', fontWeight: 600, padding: '12px 22px', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.15s', border: sel ? '1px solid #8E2A21' : '1px solid #E9DDD6', background: sel ? '#8E2A21' : '#FBF8F5', color: sel ? '#FBF8F5' : '#221714' },
+      };
+    });
+    const ready = this.state.day && this.state.time;
+    const pretty = this.state.day ? this.state.day.replace(/^(\w+) (\w+) (\d+).*$/, '$1, $2 $3') : '';
+    return {
+      days: dayItems, times,
+      dayPicked: !!this.state.day,
+      notBooked: !this.state.booked,
+      booked: this.state.booked,
+      selectionSummary: ready ? pretty + ' · ' + this.state.time + ' (ET)' : 'Select a day and time to confirm.',
+      setName: (e) => this.setState({ name: e.target.value }),
+      book: () => { if (ready) this.setState({ booked: true }); },
+      bookStyle: { fontFamily: "'Archivo',sans-serif", background: ready ? '#8E2A21' : '#D9C8BF', color: '#FBF8F5', padding: '15px 28px', border: 'none', borderRadius: '4px', fontWeight: 600, fontSize: '16px', cursor: ready ? 'pointer' : 'not-allowed', justifySelf: 'start', transition: 'background 0.15s' },
+      confirmation: (this.state.name ? this.state.name + ', your' : 'Your') + ' free consultation is set for ' + pretty + ' at ' + this.state.time + ' (ET).',
+      reset: () => this.setState({ booked: false, time: null }),
+    };
+  }
+}
+</script>
+</body>
+</html>

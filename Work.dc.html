@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: #FBF8F5; color: #221714; font-family: 'Archivo', sans-serif; }
+a { color: #8E2A21; text-decoration: none; }
+a:hover { color: #741F18; }
+</style>
+</helmet>
+
+<dc-import name="Nav" active="work" hint-size="100%,76px"></dc-import>
+
+<header style="max-width:1160px; margin:0 auto; padding:88px 32px 64px">
+  <div style="font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8E2A21; margin-bottom:16px">Work</div>
+  <h1 style="font-family:'Libre Caslon Text', serif; font-size:56px; line-height:1.08; font-weight:700; margin:0 0 20px; max-width:760px; text-wrap:balance">Results behind the engine.</h1>
+  <p style="font-size:18px; line-height:1.65; color:#6E5C55; margin:0; max-width:640px; text-wrap:pretty">Avika is a new venture — but the execution engine behind it isn't. These results were delivered by our founding partners through their established firms in Mexico, across real estate, B2B, solar, healthcare, and personal brands. That same team now powers Avika engagements.</p>
+</header>
+
+<section id="stats" style="max-width:1160px; margin:0 auto; padding:24px 32px 104px">
+  <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px">
+    <sc-for list="{{ stats }}" as="stat" hint-placeholder-count="6">
+      <div style="background:#FFFDFB; border:1px solid #E9DDD6; border-radius:8px; padding:36px 30px">
+        <div style="font-family:'Libre Caslon Text', serif; font-size:52px; font-weight:700; color:#8E2A21; line-height:1">{{ stat.value }}</div>
+        <div style="font-size:16px; font-weight:600; margin-top:16px">{{ stat.title }}</div>
+        <div style="font-size:14.5px; line-height:1.55; color:#6E5C55; margin-top:6px; text-wrap:pretty">{{ stat.label }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="margin-top:56px; background:#F7E9E3; border-radius:8px; padding:40px 44px; display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap">
+    <div style="font-family:'Libre Caslon Text', serif; font-size:24px; font-weight:700; text-wrap:balance">Want results like these?</div>
+    <a href="Contact.dc.html" style="background:#8E2A21; color:#FBF8F5; padding:14px 26px; border-radius:4px; font-weight:600; font-size:16px" style-hover="background:#741F18; color:#FBF8F5">Book a free consultation</a>
+  </div>
+</section>
+
+<footer style="border-top:1px solid #E9DDD6">
+  <div style="max-width:1160px; margin:0 auto; padding:32px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; font-size:14px; color:#A08D84">
+    <span style="font-family:'Libre Caslon Text', serif; font-size:15px; font-weight:700; letter-spacing:0.06em; color:#8E2A21">AVIKA</span>
+    <div>© 2026 Avika · Your outsourced growth team</div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { on: false, p: 0 };
+  componentDidMount() {
+    this._poll = setInterval(() => {
+      const el = document.getElementById('stats');
+      if (!el) return;
+      clearInterval(this._poll);
+      this._attach(el);
+    }, 100);
+  }
+  _attach(el) {
+    this._io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !this.state.on) {
+        this.setState({ on: true });
+        const t0 = performance.now();
+        const step = (t) => {
+          const p = Math.min(1, (t - t0) / 1400);
+          this.setState({ p: 1 - Math.pow(1 - p, 3) });
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.15 });
+    this._io.observe(el);
+  }
+  componentWillUnmount() { clearInterval(this._poll); if (this._io) this._io.disconnect(); }
+  renderVals() {
+    const p = this.state.p;
+    const fmt = (n) => n.toLocaleString('en-US');
+    return {
+      stats: [
+        { value: '$' + Math.round(5 * p) + 'M', title: 'Commercial real estate sales', label: '100% of inventory pre-sold' },
+        { value: fmt(Math.round(3000 * p)) + '+', title: 'Qualified B2B leads', label: 'Generated through demand-gen and nurture systems' },
+        { value: Math.round(400 * p) + '%', title: 'Sales growth', label: 'For a solar distribution business' },
+        { value: Math.round(20 * p) + '+', title: 'New businesses launched', label: 'Import and turnkey projects' },
+        { value: Math.round(300 * p) + '%', title: 'Client growth', label: '15+ therapists built into a scalable clinic' },
+        { value: fmt(Math.round(700 * p)) + 'K+', title: 'Combined audience', label: 'Executive & medical personal brands, incl. a top-20 business podcast in Mexico' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: #FBF8F5; color: #221714; font-family: 'Archivo', sans-serif; }
+a { color: #8E2A21; text-decoration: none; }
+a:hover { color: #741F18; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<dc-import name="Nav" active="insights" hint-size="100%,76px"></dc-import>
+
+<sc-if value="{{ listView }}" hint-placeholder-val="{{ true }}">
+  <header style="max-width:1160px; margin:0 auto; padding:88px 32px 56px">
+    <div style="font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8E2A21; margin-bottom:16px">Insights</div>
+    <h1 style="font-family:'Libre Caslon Text', serif; font-size:56px; line-height:1.08; font-weight:700; margin:0 0 20px; max-width:720px; text-wrap:balance">Ideas on growth, marketing, and market entry.</h1>
+    <p style="font-size:18px; line-height:1.65; color:#6E5C55; margin:0; max-width:580px; text-wrap:pretty">What we're learning from building growth systems on both sides of the border.</p>
+  </header>
+  <section style="max-width:1160px; margin:0 auto; padding:0 32px 104px">
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px">
+      <sc-for list="{{ posts }}" as="post" hint-placeholder-count="3">
+        <div onClick="{{ post.openPost }}" style="background:#FFFDFB; border:1px solid #E9DDD6; border-radius:8px; padding:30px 28px; cursor:pointer; display:grid; gap:14px; align-content:start; transition:border-color 0.15s" style-hover="border-color:#8E2A21">
+          <div style="display:flex; align-items:center; gap:12px; font-size:13px">
+            <span style="font-weight:600; color:#8E2A21">{{ post.category }}</span>
+            <span style="color:#A08D84">{{ post.dateLabel }}</span>
+          </div>
+          <div style="font-family:'Libre Caslon Text', serif; font-size:23px; font-weight:700; line-height:1.25; text-wrap:balance">{{ post.title }}</div>
+          <p style="margin:0; font-size:15px; line-height:1.6; color:#6E5C55; text-wrap:pretty">{{ post.excerpt }}</p>
+          <div style="color:#8E2A21; font-weight:600; font-size:14.5px">Read →</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:40px; border:1px dashed #D9C8BF; border-radius:8px; padding:28px 32px; font-size:15px; line-height:1.6; color:#A08D84; max-width:640px">
+      More posts coming soon — new pieces are added to <span style="font-weight:600; color:#6E5C55">posts.json</span> and appear here automatically.
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ postView }}" hint-placeholder-val="{{ false }}">
+  <article style="max-width:760px; margin:0 auto; padding:72px 32px 104px; animation:fadeUp 0.4s ease both">
+    <button onClick="{{ backToList }}" style="font-family:'Archivo',sans-serif; background:none; border:none; color:#8E2A21; font-weight:600; font-size:15px; cursor:pointer; padding:0; margin-bottom:36px">← All insights</button>
+    <div style="display:flex; align-items:center; gap:12px; font-size:14px; margin-bottom:18px">
+      <span style="font-weight:600; color:#8E2A21">{{ activeCategory }}</span>
+      <span style="color:#A08D84">{{ activeDate }}</span>
+    </div>
+    <h1 style="font-family:'Libre Caslon Text', serif; font-size:44px; line-height:1.12; font-weight:700; margin:0 0 36px; text-wrap:balance">{{ activeTitle }}</h1>
+    <div style="display:grid; gap:22px">
+      <sc-for list="{{ activeParagraphs }}" as="para" hint-placeholder-count="4">
+        <p style="margin:0; font-size:17.5px; line-height:1.75; color:#3A2D27; text-wrap:pretty">{{ para.text }}</p>
+      </sc-for>
+    </div>
+    <div style="margin-top:56px; background:#F7E9E3; border-radius:8px; padding:36px 40px; display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap">
+      <div style="font-family:'Libre Caslon Text', serif; font-size:22px; font-weight:700; text-wrap:balance">Want help putting this to work?</div>
+      <a href="Contact.dc.html" style="background:#8E2A21; color:#FBF8F5; padding:13px 24px; border-radius:4px; font-weight:600; font-size:15px" style-hover="background:#741F18; color:#FBF8F5">Book a free consultation</a>
+    </div>
+  </article>
+</sc-if>
+
+<footer style="border-top:1px solid #E9DDD6">
+  <div style="max-width:1160px; margin:0 auto; padding:32px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; font-size:14px; color:#A08D84">
+    <span style="font-family:'Libre Caslon Text', serif; font-size:15px; font-weight:700; letter-spacing:0.06em; color:#8E2A21">AVIKA</span>
+    <div>© 2026 Avika · Your outsourced growth team</div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { posts: [], active: null };
+  componentDidMount() {
+    fetch('posts.json').then(r => r.json()).then(posts => this.setState({ posts })).catch(() => {});
+  }
+  renderVals() {
+    const fmtDate = (iso) => {
+      const [y, m, d] = iso.split('-').map(Number);
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return months[m - 1] + ' ' + d + ', ' + y;
+    };
+    const posts = this.state.posts.map((p, i) => ({
+      title: p.title, category: p.category, excerpt: p.excerpt,
+      dateLabel: fmtDate(p.date),
+      openPost: () => { this.setState({ active: i }); window.scrollTo(0, 0); },
+    }));
+    const a = this.state.active !== null ? this.state.posts[this.state.active] : null;
+    return {
+      posts,
+      listView: !a,
+      postView: !!a,
+      activeTitle: a ? a.title : '',
+      activeCategory: a ? a.category : '',
+      activeDate: a ? fmtDate(a.date) : '',
+      activeParagraphs: a ? a.body.split('\n\n').map(text => ({ text })) : [],
+      backToList: () => this.setState({ active: null }),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<nav style="position:sticky; top:0; z-index:50; background:rgba(251,248,245,0.92); backdrop-filter:blur(8px); border-bottom:1px solid #E9DDD6">
+  <div style="max-width:1160px; margin:0 auto; padding:0 32px; height:76px; display:flex; align-items:center; justify-content:space-between; gap:24px">
+    <a href="Home.dc.html" style="display:grid; justify-items:center; gap:1px">
+      <svg width="38" height="12" viewBox="0 0 44 14" aria-hidden="true"><path d="M4 12 A20 20 0 0 1 40 12" stroke="#E8A23B" stroke-width="5" fill="none" stroke-linecap="round"></path></svg>
+      <span style="font-family:'Libre Caslon Text', serif; font-size:21px; font-weight:700; letter-spacing:0.06em; color:#8E2A21; line-height:1">AVIKA</span>
+    </a>
+    <div style="display:flex; align-items:center; gap:28px">
+      <sc-for list="{{ links }}" as="l" hint-placeholder-count="4">
+        <a href="{{ l.href }}" style="{{ l.style }}" style-hover="color:#8E2A21">{{ l.label }}</a>
+      </sc-for>
+      <a href="Contact.dc.html" style="background:#8E2A21; color:#FBF8F5; padding:11px 20px; border-radius:4px; font-weight:600; font-size:15px" style-hover="background:#741F18; color:#FBF8F5">Free Consultation</a>
+    </div>
+  </div>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1200, &quot;height&quot;: 76}, &quot;active&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;&quot;, &quot;about&quot;, &quot;services&quot;, &quot;work&quot;, &quot;insights&quot;], &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? '';
+    const links = [
+      ['About', 'About.dc.html', 'about'],
+      ['Services', 'Services.dc.html', 'services'],
+      ['Work', 'Work.dc.html', 'work'],
+      ['Insights', 'Insights.dc.html', 'insights'],
+    ].map(([label, href, key]) => ({
+      label, href,
+      style: { fontSize: '15px', color: active === key ? '#8E2A21' : '#221714', fontWeight: active === key ? 700 : 500 },
+    }));
+    return { links };
+  }
+}
+</script>
+</body>
+</html>
